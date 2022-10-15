@@ -37,4 +37,9 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     implementation 'com.github.youlookwhat:ByWebView:1.2.0'
+
+
+    implementation 'com.github.Justson.AgentWeb:agentweb-core:v4.1.9-androidx'
+    implementation 'com.github.Justson.AgentWeb:agentweb-filechooser:v4.1.9-androidx'
+
 }
