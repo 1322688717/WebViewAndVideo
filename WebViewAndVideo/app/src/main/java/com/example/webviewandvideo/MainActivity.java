@@ -3,6 +3,7 @@ package com.example.webviewandvideo;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -12,13 +13,16 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.just.agentweb.AgentWeb;
 
+import me.jingbin.progress.WebProgress;
 import me.jingbin.web.ByWebView;
 
 public class MainActivity extends AppCompatActivity {
@@ -28,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private View customView;
     private ByWebView byWebView;
     private AgentWeb mAgentWeb;
+    private WebProgress mProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,14 +40,26 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         initView();
+        initProgess();
         initWebView();
         //initByWebView();
         //initGoogleWebView();
     }
 
+    private void initProgess() {
+        mProgress.show(); // 显示
+        mProgress.setWebProgress(50);              // 设置进度
+        mProgress.setColor("#D81B60");             // 设置颜色
+        mProgress.setColor("#00D81B60","#D81B60"); // 设置渐变色
+        mProgress.hide(); // 隐藏
+
+    }
+
     private void initView() {
         webView = findViewById(R.id.wb_view);
         fullVideo = findViewById(R.id.full_video);
+        mProgress = findViewById(R.id.progressbar_view);
+
     }
 
     private void initGoogleWebView() {
@@ -109,15 +126,28 @@ public class MainActivity extends AppCompatActivity {
                 .loadUrl("https://www.baidu.com/");
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private void initWebView() {
 
-        //设置WebView属性，能够执行javascript脚本
-        webView.getSettings().setJavaScriptEnabled(true);
+        WebSettings settings = webView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setDomStorageEnabled(true);//开启DOM
         webView.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 return false;
 
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                // html加载完成之后，无网隐藏进度条
+//                if (!CheckNetwork.isNetworkConnected(this)) {
+//                    mProgress.hide();
+//                }
+
+                mProgress.hide();
+                super.onPageFinished(view, url);
             }
         });
 
@@ -147,8 +177,16 @@ public class MainActivity extends AppCompatActivity {
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);//设置全屏
 
             }
+
+
+
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                mProgress.setWebProgress(newProgress);
+            }
         });
-        webView.loadUrl("https://www.baidu.com/");
+        webView.loadUrl("https://baidu.com/");
+        mProgress.show();
     }
 
 

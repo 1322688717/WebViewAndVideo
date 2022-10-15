@@ -42,4 +42,6 @@ dependencies {
     implementation 'com.github.Justson.AgentWeb:agentweb-core:v4.1.9-androidx'
     implementation 'com.github.Justson.AgentWeb:agentweb-filechooser:v4.1.9-androidx'
 
+    implementation 'com.github.youlookwhat:WebProgress:1.2.0'
+
 }
